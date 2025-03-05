@@ -76,11 +76,84 @@ Group By, Order By (ASC, DESC)
 
 
 
-SELECT *
-FROM EmployeeDemographics
---Order by Age Desc, Gender desc
+--SELECT *
+--FROM EmployeeDemographics
+----Order by Age Desc, Gender desc
 
 
 --SELECT *
 --FROM EmployeeDemographics
 --Order by 4 Desc, 1 Desc
+
+
+/*
+Inner/full/left/right/outer joins
+*/
+--Table 1 Insert:
+Insert into EmployeeDemographics VALUES
+(1011, 'Ryan', 'Howard', 26, 'Male'),
+(NULL, 'Holly', 'Flax', NULL, NULL),
+(1013, 'Darryl', 'Philbin', NULL, 'Male')
+
+--Table 3 Query:
+Create Table WareHouseEmployeeDemographics 
+(EmployeeID int, 
+FirstName varchar(50), 
+LastName varchar(50), 
+Age int, 
+Gender varchar(50)
+)
+
+--Table 3 Insert:
+Insert into WareHouseEmployeeDemographics VALUES
+(1013, 'Darryl', 'Philbin', NULL, 'Male'),
+(1050, 'Roy', 'Anderson', 31, 'Male'),
+(1051, 'Hidetoshi', 'Hasagawa', 40, 'Male'),
+(1052, 'Val', 'Johnson', 31, 'Female')
+
+select * 
+from sqltutorial.dbo.employeedemographics
+
+select *
+from Sqltutorial.dbo.Employeesalary
+
+select *
+from sqltutorial.dbo.EmployeeDemographics
+right outer join SQLTutorial.dbo.EmployeeSalary
+	on EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+
+select *
+from sqltutorial.dbo.EmployeeDemographics
+left outer join SQLTutorial.dbo.EmployeeSalary
+	on EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+
+select *
+from sqltutorial.dbo.EmployeeDemographics
+full outer join SQLTutorial.dbo.EmployeeSalary
+	on EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+SELECT EmployeeSalary.EmployeeID, FirstName, LastName, JobTitle, Salary
+FROM SQLTutorial.dbo.EmployeeDemographics left join  SQLTutorial.dbo.EmployeeSalary
+on EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+SELECT EmployeeDemographics.EmployeeID, FirstName, LastName, JobTitle, Salary
+FROM SQLTutorial.dbo.EmployeeDemographics full join  SQLTutorial.dbo.EmployeeSalary
+on EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+
+SELECT EmployeeDemographics.EmployeeID, FirstName, LastName, JobTitle, Salary
+FROM SQLTutorial.dbo.EmployeeDemographics inner join  SQLTutorial.dbo.EmployeeSalary
+on EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+where FirstName <> 'Michael'
+order by Salary Desc
+
+
+
+SELECT Jobtitle, avg(Salary)
+from SQLTutorial.dbo.EmployeeDemographics
+Inner Join SQLTutorial.dbo.EmployeeSalary
+	on EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+where JobTitle = 'Salesman'
+group by JobTitle
