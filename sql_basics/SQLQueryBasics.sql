@@ -450,3 +450,42 @@ Dont filter on FirstName only,
 Select FirstName, Lower(FirstName) as LowerFirstName
 from EmployeeErrors
 
+/*
+Topic: Stored Procedures
+What is a stored procedure?
+A stored procedure is a prepared SQL code that you can save, so the code can be reused over and over again.
+*/
+
+--  Bsic Stored Procedure
+
+Create Procedure TEST
+AS
+Select *
+From EmployeeDemographics
+
+Exec TEST
+
+drop table if exists #temp_employee
+drop Procedure if exists Temp_Employee
+
+
+
+Create Procedure Temp_Employee
+AS 
+Create Table #temp_employee(
+	JobTitle varchar(100),
+	EmployeePerJob int,
+	AvgAge int,
+	AvgSalary int
+)
+
+Insert into #temp_employee
+select JobTitle, Count(JobTitle), Avg(Age), Avg(Salary)
+from SQLTutorial..EmployeeDemographics emp
+join EmployeeSalary sal
+	on emp.EmployeeID = sal.EmployeeID
+group by JobTitle
+select * from #temp_employee
+
+
+Exec Temp_Employee
