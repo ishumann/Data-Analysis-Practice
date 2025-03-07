@@ -1,4 +1,4 @@
-
+drop table if exists EmployeeDemographics
 Create Table EmployeeDemographics 
 (EmployeeID int, 
 FirstName varchar(50), 
@@ -359,7 +359,7 @@ from SQLTutorial..EmployeeSalary
 
 
 -- Method 2 for temporary table
-
+Drop Table If exists #TempEmployee2
 CREATE TABLE #TempEmployee2
 (
 	JobTitle varchar(50),
@@ -375,3 +375,78 @@ Join SQLTutorial..EmployeeSalary sal
 group by JobTitle
 
 select * from #TempEmployee2
+
+
+/* topic: String Functions 
+
+String Functions - trim, ltrim, rtrim, replace, substring, upper, loewr
+
+*/
+
+Drop Table If exists EmployeeErrors
+
+Create Table EmployeeErrors(
+	EmployeeID Varchar(50),
+	FirstName Varchar(50),
+	LastName Varchar(50),
+
+)
+
+
+Insert into EmployeeErrors Values
+('  1001', 'Jimbo', 'Halbert'),
+('1002  ', 'Pam', 'Beasley'),
+('1003', 'Dwight', 'Schrute'),
+('1004', 'Angela', 'Martin'),
+('1005', 'TOby', 'Flenderson - fired'),
+('1006', 'Michael', 'Scoooott'),
+('1007', 'Meredith', 'Palmer'),
+('1008', 'Stanley', 'Hudson'),
+('1009', 'Kevin', 'Malone')
+
+
+
+-- Using Trim, LTirm, RTrim
+
+Select EmployeeID, Trim(EMployeeID) as TrimEmployeeID
+from EmployeeErrors
+
+Select EmployeeID, LTrim(EMployeeID) as TrimEmployeeID
+from EmployeeErrors
+
+Select EmployeeID, RTrim(EMployeeID) as TrimEmployeeID
+from EmployeeErrors
+
+
+--  Using Replace
+Select LastName, Replace(lastName, '- Fired', '') as LastNameFIxed
+FROM EmployeeErrors
+
+
+-- Using Substring its like slicing in python
+Select Substring(FirstName, 1, 3) as SubFirstName
+from EmployeeErrors
+
+--  fuzzy matching
+
+
+Select substring(err.FirstName, 1,3) , substring(demo.FirstName, 1,3)
+from EmployeeErrors as err
+join EmployeeDemographics demo
+	on  substring(err.FirstName, 1,3) = substring(demo.FirstName, 1,3)
+
+/*
+Dont filter on FirstName only,
+
+-- Last Name
+-- Gender
+-- AGE
+-- DOB
+*/
+
+
+-- Using Upper and Lower
+
+Select FirstName, Lower(FirstName) as LowerFirstName
+from EmployeeErrors
+
