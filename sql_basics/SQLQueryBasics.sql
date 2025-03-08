@@ -488,4 +488,57 @@ group by JobTitle
 select * from #temp_employee
 
 
-Exec Temp_Employee
+Exec Temp_Employee @JobTitle = 'Salesman'
+
+
+
+
+
+/*
+
+Topic: Subqueries
+what is a subquery?
+A subquery is a query within another query. The outer query is called as main query and inner query is called as subquery.
+can be used in SELECT, INSERT, UPDATE, DELETE, WHERE FROM statements.
+*/
+
+Select * 
+from EmployeeSalary
+
+
+
+-- Subquery in SELECT statement
+Select EmployeeID, Salary, (select AVG(salary) from EmployeeSalary) as AvgSalary
+from EmployeeSalary
+
+-- how to do it with Partition By
+
+Select EmployeeID, Salary, AVG(salary) over () as AvgSalary
+from EmployeeSalary
+
+
+
+
+-- Why Group By does not work
+Select EmployeeID, Salary, AVG(Salary) as AvgSalary
+from EmployeeSalary
+group by EmployeeID, Salary
+
+--  Subquery in From Statement
+Select S.EmployeeID, AvgSalary 
+from (Select EmployeeID, Salary, AVG(salary) over () as AvgSalary
+      from EmployeeSalary) as S
+
+
+-- Subquery in Where Statement
+
+
+Select EmployeeID, JobTitle, Salary
+from EmployeeSalary
+where EmployeeID in (
+	Select EmployeeID
+	From EmployeeDemographics
+	where Age > 30)
+
+
+
