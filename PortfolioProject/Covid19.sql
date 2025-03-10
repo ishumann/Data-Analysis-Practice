@@ -77,3 +77,11 @@ from PortfolioProject..CovidDeaths deaths
 Join Portfolioproject..CovidVaccination vac
 	on deaths.country = vac.country
 	and deaths.date = vac.date
+
+
+-- Looking at Total Population vs Vaccinations
+Select vac.continent, dea.country, dea.date, dea.population, vac.new_vaccinations
+from PortfolioProject..CovidDeaths dea
+join PortfolioProject..CovidVaccination vac
+on dea.date = vac.date
+order by 1,2,3
