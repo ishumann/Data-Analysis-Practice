@@ -48,7 +48,7 @@ order by infectionPercentage desc
 Select country, Population, 
 Max(total_deaths) as HighestdeathsCount,
 Max((total_deaths/population))*100 as deathpercent
-From PortfolioProject..CovidDeaths
+From PortfolioP**************************/qwroject..CovidDeaths
 group by country, population
 order by 1,2
 
@@ -84,4 +84,110 @@ Select vac.continent, dea.country, dea.date, dea.population, vac.new_vaccination
 from PortfolioProject..CovidDeaths dea
 join PortfolioProject..CovidVaccination vac
 on dea.date = vac.date
-order by 1,2,3
+
+Select vac.continent, dea.country, dea.date, dea.population, vac.new_vaccinations
+from PortfolioProject..CovidDeaths dea
+Join Portfolioproject..CovidVaccination vac
+	on dea.country = vac.country
+	and dea.date = vac.date
+where vac.continent is not null and vac.new_vaccinations is not null 
+order by 3,2,1
+
+
+
+-- Rolling Count
+
+
+Select vac.continent, dea.country, dea.date, dea.population, vac.new_vaccinations,
+sum(convert(bigint,vac.new_vaccinations)) over (partition by dea.country order by dea.country, dea.date) as rolling_vaccinations
+--, ((rolling_vaccinations/population)*100) as vacc_pop_ratio
+from PortfolioProject..CovidDeaths dea
+Join Portfolioproject..CovidVaccination vac
+	on dea.country = vac.country
+	and dea.date = vac.date
+where vac.continent is not null 
+order by 2,3;
+
+--SELECT country, date, COUNT(*)
+--FROM PortfolioProject..CovidVaccination
+--GROUP BY country, date
+--HAVING COUNT(*) > 1;
+
+--SELECT country, date, COUNT(*)
+--FROM PortfolioProject..CovidDeaths
+--GROUP BY country, date
+--HAVING COUNT(*) > 1;
+
+
+
+
+-- using CTE for finding rolling vaccination vs population ratio
+
+
+with PopvsVac(Continent, country, date, population,new_vaccinations, rolling_vaccinations) 
+as 
+(Select vac.continent, dea.country, dea.date, dea.population, vac.new_vaccinations,
+sum(convert(bigint,vac.new_vaccinations)) over (partition by dea.country order by dea.country, dea.date) as rolling_vaccinations
+--, ((rolling_vaccinations/population)*100) as vacc_pop_ratio
+from PortfolioProject..CovidDeaths dea
+Join Portfolioproject..CovidVaccination vac
+	on dea.country = vac.country
+	and dea.date = vac.date
+where vac.continent is not null 
+) 
+select *,(rolling_vaccinations/population)*100 as vacc_pop_ratio
+from PopvsVac
+order by 2,3
+
+drop table #percentPopVac
+--temp Table
+Create Table #PercentPopVac (
+Continent nvarchar(255),
+country nvarchar(255),
+Date datetime,
+population numeric,
+new_vaccinations numeric,
+rolling_vaccinations numeric,
+)
+
+Insert into #PercentPopVac
+Select vac.Continent, 
+dea.country, 
+dea.date, 
+dea.population, 
+vac.new_vaccinations,
+sum(convert(bigint,vac.new_vaccinations)) over (partition by dea.country order by dea.country, dea.date)
+as rolling_vaccinations
+
+from PortfolioProject..CovidDeaths dea
+Join Portfolioproject..CovidVaccination vac
+	on dea.country = vac.country
+	and dea.date = vac.date
+where vac.continent is not null 
+
+select *,(rolling_vaccinations/population*100) as vacc_pop_ratio
+from #PercentPopVac
+
+
+
+-- Creating View to store data forz later Visualizations
+
+Create View PercentPopulationVaccinated as
+Select vac.Continent, 
+dea.country, 
+dea.date, 
+dea.population, 
+vac.new_vaccinations,
+sum(convert(bigint,vac.new_vaccinations)) over (partition by dea.country order by dea.country, dea.date)
+as rolling_vaccinations
+
+from PortfolioProject..CovidDeaths dea
+Join Portfolioproject..CovidVaccination vac
+	on dea.country = vac.country
+	and dea.date = vac.date
+where vac.continent is not null 
+--order by 2,3
+
+
+select *
+from PercentPopulationVaccinated
