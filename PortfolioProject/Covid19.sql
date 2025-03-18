@@ -191,3 +191,5 @@ where vac.continent is not null
 
 select *
 from PercentPopulationVaccinated
+
+
