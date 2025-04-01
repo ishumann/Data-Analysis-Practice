@@ -288,5 +288,11 @@ drop column PropertyAddress, TaxDistrict, OwnerAddress
 
 ALter Table PortfolioProject..NashvilleHousing
 drop column SaleDate
+
+
+
+
+
+
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
